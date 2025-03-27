@@ -1,6 +1,8 @@
 # vue-transitions
 
-This template should help get you started developing with Vue 3 in Vite.
+A Vue 3 demo project showcasing in-page and cross-page transitions using Vue's View Transition API. This project demonstrates elegant animations and smooth transitions between different views and UI states.
+
+Vibe-coded with [Claude Code](https://claude.ai/code) 🤖
 
 ## Recommended IDE Setup
 
