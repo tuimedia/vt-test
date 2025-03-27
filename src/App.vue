@@ -41,14 +41,6 @@ import { RouterLink, RouterView } from 'vue-router'
 @keyframes fade-out {
   to { opacity: 0; }
 }
-
-@keyframes slide-from-right {
-  from { transform: translateX(100%); }
-}
-
-@keyframes slide-to-left {
-  to { transform: translateX(-100%); }
-}
 </style>
 
 <style scoped>

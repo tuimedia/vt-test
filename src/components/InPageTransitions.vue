@@ -75,7 +75,6 @@ const toggleTheme = () => {
             :alt="images[currentImageIndex].alt"
             :key="images[currentImageIndex].id"
             class="gallery-img"
-            style="transform: translateX(0);"
           />
         </div>
         <button @click="nextImage" class="gallery-btn next-btn" style="view-transition-name: gallery-arrow-next">→</button>
@@ -172,7 +171,6 @@ h2 {
   height: 100%;
   object-fit: cover;
   will-change: transform;
-  transform: translateX(0);
 }
 
 .gallery-btn {
