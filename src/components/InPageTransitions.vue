@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, nextTick } from 'vue'
 
 // Image gallery
 const images = [
@@ -15,8 +15,8 @@ const nextImage = () => {
   // Set direction first
   direction.value = 1
   
-  // Use a short delay to ensure direction class is applied before transition
-  setTimeout(() => {
+  // Wait for Vue to update the DOM with the direction class
+  nextTick(() => {
     if (document.startViewTransition) {
       document.startViewTransition(() => {
         currentImageIndex.value = (currentImageIndex.value + 1) % images.length
@@ -24,15 +24,15 @@ const nextImage = () => {
     } else {
       currentImageIndex.value = (currentImageIndex.value + 1) % images.length
     }
-  }, 10)
+  })
 }
 
 const prevImage = () => {
   // Set direction first
   direction.value = -1
   
-  // Use a short delay to ensure direction class is applied before transition
-  setTimeout(() => {
+  // Wait for Vue to update the DOM with the direction class
+  nextTick(() => {
     if (document.startViewTransition) {
       document.startViewTransition(() => {
         currentImageIndex.value = (currentImageIndex.value - 1 + images.length) % images.length
@@ -40,15 +40,15 @@ const prevImage = () => {
     } else {
       currentImageIndex.value = (currentImageIndex.value - 1 + images.length) % images.length
     }
-  }, 10)
+  })
 }
 
 // Expandable card
 const isExpanded = ref(false)
 
 const toggleCard = () => {
-  // Use a short timeout to ensure reactivity
-  setTimeout(() => {
+  // Wait for Vue to update the DOM
+  nextTick(() => {
     if (document.startViewTransition) {
       document.startViewTransition(() => {
         isExpanded.value = !isExpanded.value
@@ -56,15 +56,15 @@ const toggleCard = () => {
     } else {
       isExpanded.value = !isExpanded.value
     }
-  }, 10)
+  })
 }
 
 // Theme toggle
 const isDarkTheme = ref(false)
 
 const toggleTheme = () => {
-  // Use a short timeout to ensure reactivity
-  setTimeout(() => {
+  // Wait for Vue to update the DOM
+  nextTick(() => {
     if (document.startViewTransition) {
       document.startViewTransition(() => {
         isDarkTheme.value = !isDarkTheme.value
@@ -74,7 +74,7 @@ const toggleTheme = () => {
       isDarkTheme.value = !isDarkTheme.value
       document.documentElement.classList.toggle('dark-theme')
     }
-  }, 10)
+  })
 }
 </script>
 
