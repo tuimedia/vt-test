@@ -8,8 +8,11 @@ const images = [
   { id: 3, src: 'https://picsum.photos/id/12/800/500', alt: 'Landscape 3' }
 ]
 const currentImageIndex = ref(0)
+// Direction flag: 1 = forward, -1 = backward
+const direction = ref(1)
 
 const nextImage = () => {
+  direction.value = 1
   if (document.startViewTransition) {
     document.startViewTransition(() => {
       currentImageIndex.value = (currentImageIndex.value + 1) % images.length
@@ -20,6 +23,7 @@ const nextImage = () => {
 }
 
 const prevImage = () => {
+  direction.value = -1
   if (document.startViewTransition) {
     document.startViewTransition(() => {
       currentImageIndex.value = (currentImageIndex.value - 1 + images.length) % images.length
@@ -59,7 +63,14 @@ const toggleTheme = () => {
 </script>
 
 <template>
-  <div class="in-page-transitions" :class="{ 'dark-theme': isDarkTheme }">
+  <div 
+    class="in-page-transitions" 
+    :class="{ 
+      'dark-theme': isDarkTheme,
+      'direction-forward': direction === 1,
+      'direction-backward': direction === -1 
+    }"
+  >
     <h1>In-Page View Transitions</h1>
     
     <section>
@@ -76,7 +87,7 @@ const toggleTheme = () => {
         </div>
         <button @click="nextImage" class="gallery-btn next-btn">→</button>
       </div>
-      <p class="description">Images transition smoothly between each other</p>
+      <p class="description">Images transition smoothly between each other, with direction-aware animations</p>
     </section>
 
     <section>
@@ -254,20 +265,41 @@ h2 {
   from { transform: translateX(100%); }
 }
 
+@keyframes slide-from-left {
+  from { transform: translateX(-100%); }
+}
+
+@keyframes slide-to-right {
+  to { transform: translateX(100%); }
+}
+
 @keyframes slide-to-left {
   to { transform: translateX(-100%); }
 }
 
-::view-transition-old(gallery-image) {
+/* Directional gallery transitions - Forward */
+.direction-forward ::view-transition-old(gallery-image) {
   animation: 300ms cubic-bezier(0.4, 0, 0.2, 1) both fade-out,
              300ms cubic-bezier(0.4, 0, 0.2, 1) both slide-to-left;
 }
 
-::view-transition-new(gallery-image) {
+.direction-forward ::view-transition-new(gallery-image) {
   animation: 300ms cubic-bezier(0.4, 0, 0.2, 1) both fade-in,
              300ms cubic-bezier(0.4, 0, 0.2, 1) both slide-from-right;
 }
 
+/* Directional gallery transitions - Backward */
+.direction-backward ::view-transition-old(gallery-image) {
+  animation: 300ms cubic-bezier(0.4, 0, 0.2, 1) both fade-out,
+             300ms cubic-bezier(0.4, 0, 0.2, 1) both slide-to-right;
+}
+
+.direction-backward ::view-transition-new(gallery-image) {
+  animation: 300ms cubic-bezier(0.4, 0, 0.2, 1) both fade-in,
+             300ms cubic-bezier(0.4, 0, 0.2, 1) both slide-from-left;
+}
+
+/* Simple fade for card */
 ::view-transition-old(expand-card) {
   animation: 300ms cubic-bezier(0.4, 0, 0.2, 1) both fade-out;
 }
