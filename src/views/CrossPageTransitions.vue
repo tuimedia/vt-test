@@ -1,51 +1,15 @@
 <script setup>
 import { ref } from 'vue'
+import { products as productsData } from '@/data/products'
 
-// Product data
-const products = ref([
-  {
-    id: 1,
-    name: 'Mountain Landscape',
-    image: 'https://picsum.photos/id/29/800/600',
-    color: '#3498db',
-    description: 'Breathtaking mountain views with clear blue skies and lush valleys.'
-  },
-  {
-    id: 2,
-    name: 'Ocean Sunset',
-    image: 'https://picsum.photos/id/37/800/600',
-    color: '#e74c3c',
-    description: 'Spectacular sunset over the ocean with vibrant orange and red hues.'
-  },
-  {
-    id: 3,
-    name: 'Forest Trail',
-    image: 'https://picsum.photos/id/15/800/600',
-    color: '#2ecc71',
-    description: 'Serene forest path surrounded by towering trees and dappled sunlight.'
-  },
-  {
-    id: 4,
-    name: 'Desert Dunes',
-    image: 'https://picsum.photos/id/28/800/600',
-    color: '#f39c12',
-    description: 'Sweeping desert landscape with golden sand dunes stretching to the horizon.'
-  },
-  {
-    id: 5,
-    name: 'Coastal Cliffs',
-    image: 'https://picsum.photos/id/65/800/600',
-    color: '#1abc9c',
-    description: 'Dramatic coastal cliffs with crashing waves and rugged shorelines.'
-  },
-  {
-    id: 6,
-    name: 'Lake Reflection',
-    image: 'https://picsum.photos/id/76/800/600',
-    color: '#9b59b6',
-    description: 'Tranquil lake reflecting the surrounding mountains and sky like a mirror.'
-  }
-])
+// Use the shared product data
+const products = ref(productsData.map(product => ({
+  id: product.id,
+  name: product.name,
+  image: product.image,
+  color: product.color,
+  description: product.description.split('.')[0] + '.' // Just use the first sentence for the card view
+})))
 </script>
 
 <template>
