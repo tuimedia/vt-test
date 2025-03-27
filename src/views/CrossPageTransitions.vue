@@ -1,8 +1,8 @@
 <script setup>
 import { ref } from 'vue'
-import { useRouter } from 'vue-router'
-
-const router = useRouter()
+// Router is no longer needed since we use router-link
+// import { useRouter } from 'vue-router'
+// const router = useRouter()
 
 // Product data
 const products = ref([
@@ -50,10 +50,10 @@ const products = ref([
   }
 ])
 
-// View a product with transition
-const viewProduct = (productId) => {
-  router.push({ name: 'product', params: { id: productId } })
-}
+// Using router-link instead of this function now
+// const viewProduct = (productId) => {
+//   router.push({ name: 'product', params: { id: productId } })
+// }
 </script>
 
 <template>
@@ -65,11 +65,11 @@ const viewProduct = (productId) => {
     </p>
 
     <div class="products-grid">
-      <div 
+      <router-link 
         v-for="product in products" 
         :key="product.id" 
+        :to="{ name: 'product', params: { id: product.id } }"
         class="product-card"
-        @click="viewProduct(product.id)"
       >
         <div 
           class="product-image"
@@ -90,7 +90,7 @@ const viewProduct = (productId) => {
             viewTransitionName: `product-color-${product.id}`
           }"
         ></div>
-      </div>
+      </router-link>
     </div>
   </div>
 </template>
@@ -128,6 +128,9 @@ h1 {
   cursor: pointer;
   position: relative;
   background-color: var(--color-background);
+  text-decoration: none;
+  color: var(--color-text);
+  display: block;
 }
 
 .product-card:hover {

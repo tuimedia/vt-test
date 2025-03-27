@@ -1,6 +1,7 @@
 <script setup>
 import { computed } from 'vue'
-import { useRouter } from 'vue-router'
+// Router is no longer needed since we're using router-link
+// import { useRouter } from 'vue-router'
 
 // Props to receive the product ID from the route
 const props = defineProps({
@@ -10,7 +11,7 @@ const props = defineProps({
   }
 })
 
-const router = useRouter()
+// const router = useRouter()
 
 // Product database (in a real app, this would be fetched from an API)
 const productsData = [
@@ -101,20 +102,22 @@ const otherProducts = computed(() =>
   productsData.filter(p => p.id !== parseInt(props.id))
 )
 
-const goBack = () => {
-  router.push({ name: 'transitions' })
-}
+// Using router-link instead
+// const goBack = () => {
+//   router.push({ name: 'transitions' })
+// }
 
-const goToProduct = (productId) => {
-  router.push({ name: 'product', params: { id: productId } })
-}
+// We'll use router-link instead of this function
+// const goToProduct = (productId) => {
+//   router.push({ name: 'product', params: { id: productId } })
+// }
 </script>
 
 <template>
   <div v-if="product" class="product-detail">
-    <button @click="goBack" class="back-button">
+    <router-link :to="{ name: 'transitions' }" class="back-button">
       ← Back to Products
-    </button>
+    </router-link>
     
     <div class="product-hero">
       <div 
@@ -149,11 +152,11 @@ const goToProduct = (productId) => {
     <section class="product-navigation">
       <h2>More Products</h2>
       <div class="nav-products-grid">
-        <div 
+        <router-link 
           v-for="navProduct in otherProducts" 
           :key="navProduct.id" 
+          :to="{ name: 'product', params: { id: navProduct.id } }"
           class="nav-product-card"
-          @click="goToProduct(navProduct.id)"
         >
           <div class="nav-product-image">
             <img :src="navProduct.image" :alt="navProduct.name" :style="`view-transition-name: product-image-${navProduct.id}`">
@@ -168,7 +171,7 @@ const goToProduct = (productId) => {
               viewTransitionName: `product-color-${navProduct.id}`
             }"
           ></div>
-        </div>
+        </router-link>
       </div>
     </section>
   </div>
@@ -197,6 +200,7 @@ const goToProduct = (productId) => {
   color: var(--color-text);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   transition: all 0.3s;
+  text-decoration: none;
 }
 
 .back-button:hover {
@@ -311,6 +315,9 @@ h1 {
   position: relative;
   background-color: var(--color-background);
   transition: transform 0.2s, box-shadow 0.2s;
+  text-decoration: none;
+  color: var(--color-text);
+  display: block;
 }
 
 .nav-product-card:hover {
