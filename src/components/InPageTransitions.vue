@@ -68,7 +68,7 @@ const toggleTheme = () => {
     <section>
       <h2>1. Image Gallery</h2>
       <div class="gallery">
-        <button @click="prevImage" class="gallery-btn prev-btn">←</button>
+        <button @click="prevImage" class="gallery-btn prev-btn" style="view-transition-name: gallery-arrow-prev">←</button>
         <div class="image-container">
           <img 
             :src="images[currentImageIndex].src" 
@@ -78,7 +78,7 @@ const toggleTheme = () => {
             :style="`view-transition-name: gallery-image; transform: translateX(0);`"
           />
         </div>
-        <button @click="nextImage" class="gallery-btn next-btn">→</button>
+        <button @click="nextImage" class="gallery-btn next-btn" style="view-transition-name: gallery-arrow-next">→</button>
       </div>
       <p class="description">Images transition smoothly between each other with fade effects</p>
     </section>
@@ -248,14 +248,18 @@ h2 {
 }
 
 /* Simplified transitions - using consistent fade effects */
-::view-transition-old(gallery-image) {
+::view-transition-old(gallery-image),
+::view-transition-old(gallery-arrow-prev),
+::view-transition-old(gallery-arrow-next) {
   animation-name: fade-out;
   animation-duration: 300ms;
   animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   animation-fill-mode: both;
 }
 
-::view-transition-new(gallery-image) {
+::view-transition-new(gallery-image),
+::view-transition-new(gallery-arrow-prev),
+::view-transition-new(gallery-arrow-next) {
   animation-name: fade-in;
   animation-duration: 300ms;
   animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
