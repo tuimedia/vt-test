@@ -1,7 +1,5 @@
 <script setup>
 import { computed } from 'vue'
-// Router is no longer needed since we're using router-link
-// import { useRouter } from 'vue-router'
 
 // Props to receive the product ID from the route
 const props = defineProps({
@@ -10,8 +8,6 @@ const props = defineProps({
     required: true
   }
 })
-
-// const router = useRouter()
 
 // Product database (in a real app, this would be fetched from an API)
 const productsData = [
@@ -100,18 +96,7 @@ const product = computed(() => productsData.find(p => p.id === parseInt(props.id
 // Get all other products for the navigation
 const otherProducts = computed(() => 
   productsData.filter(p => p.id !== parseInt(props.id))
-)
-
-// Using router-link instead
-// const goBack = () => {
-//   router.push({ name: 'transitions' })
-// }
-
-// We'll use router-link instead of this function
-// const goToProduct = (productId) => {
-//   router.push({ name: 'product', params: { id: productId } })
-// }
-</script>
+)</script>
 
 <template>
   <div v-if="product" class="product-detail">

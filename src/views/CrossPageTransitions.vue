@@ -1,8 +1,5 @@
 <script setup>
 import { ref } from 'vue'
-// Router is no longer needed since we use router-link
-// import { useRouter } from 'vue-router'
-// const router = useRouter()
 
 // Product data
 const products = ref([
@@ -49,11 +46,6 @@ const products = ref([
     description: 'Tranquil lake reflecting the surrounding mountains and sky like a mirror.'
   }
 ])
-
-// Using router-link instead of this function now
-// const viewProduct = (productId) => {
-//   router.push({ name: 'product', params: { id: productId } })
-// }
 </script>
 
 <template>
