@@ -161,7 +161,7 @@ const otherProducts = computed(() =>
           <div class="nav-product-image">
             <img :src="navProduct.image" :alt="navProduct.name" :style="`view-transition-name: product-image-${navProduct.id}`">
           </div>
-          <div class="nav-product-name" :style="`view-transition-name: product-name-${navProduct.id}`">
+          <div class="nav-product-name">
             {{ navProduct.name }}
           </div>
           <div 
