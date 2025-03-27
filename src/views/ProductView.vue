@@ -71,8 +71,7 @@ const otherProducts = computed(() =>
           <div 
             class="nav-product-color-tag"
             :style="{
-              backgroundColor: navProduct.color,
-              viewTransitionName: `product-color-${navProduct.id}`
+              backgroundColor: navProduct.color
             }"
           ></div>
         </router-link>
