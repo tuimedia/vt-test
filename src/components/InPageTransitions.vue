@@ -69,13 +69,13 @@ const toggleTheme = () => {
       <h2>1. Image Gallery</h2>
       <div class="gallery">
         <button @click="prevImage" class="gallery-btn prev-btn" style="view-transition-name: gallery-arrow-prev">←</button>
-        <div class="image-container">
+        <div class="image-container" style="view-transition-name: gallery-image">
           <img 
             :src="images[currentImageIndex].src" 
             :alt="images[currentImageIndex].alt"
             :key="images[currentImageIndex].id"
             class="gallery-img"
-            :style="`view-transition-name: gallery-image; transform: translateX(0);`"
+            style="transform: translateX(0);"
           />
         </div>
         <button @click="nextImage" class="gallery-btn next-btn" style="view-transition-name: gallery-arrow-next">→</button>
