@@ -12,53 +12,69 @@ const currentImageIndex = ref(0)
 const direction = ref(1)
 
 const nextImage = () => {
+  // Set direction first
   direction.value = 1
-  if (document.startViewTransition) {
-    document.startViewTransition(() => {
+  
+  // Use a short delay to ensure direction class is applied before transition
+  setTimeout(() => {
+    if (document.startViewTransition) {
+      document.startViewTransition(() => {
+        currentImageIndex.value = (currentImageIndex.value + 1) % images.length
+      })
+    } else {
       currentImageIndex.value = (currentImageIndex.value + 1) % images.length
-    })
-  } else {
-    currentImageIndex.value = (currentImageIndex.value + 1) % images.length
-  }
+    }
+  }, 10)
 }
 
 const prevImage = () => {
+  // Set direction first
   direction.value = -1
-  if (document.startViewTransition) {
-    document.startViewTransition(() => {
+  
+  // Use a short delay to ensure direction class is applied before transition
+  setTimeout(() => {
+    if (document.startViewTransition) {
+      document.startViewTransition(() => {
+        currentImageIndex.value = (currentImageIndex.value - 1 + images.length) % images.length
+      })
+    } else {
       currentImageIndex.value = (currentImageIndex.value - 1 + images.length) % images.length
-    })
-  } else {
-    currentImageIndex.value = (currentImageIndex.value - 1 + images.length) % images.length
-  }
+    }
+  }, 10)
 }
 
 // Expandable card
 const isExpanded = ref(false)
 
 const toggleCard = () => {
-  if (document.startViewTransition) {
-    document.startViewTransition(() => {
+  // Use a short timeout to ensure reactivity
+  setTimeout(() => {
+    if (document.startViewTransition) {
+      document.startViewTransition(() => {
+        isExpanded.value = !isExpanded.value
+      })
+    } else {
       isExpanded.value = !isExpanded.value
-    })
-  } else {
-    isExpanded.value = !isExpanded.value
-  }
+    }
+  }, 10)
 }
 
 // Theme toggle
 const isDarkTheme = ref(false)
 
 const toggleTheme = () => {
-  if (document.startViewTransition) {
-    document.startViewTransition(() => {
+  // Use a short timeout to ensure reactivity
+  setTimeout(() => {
+    if (document.startViewTransition) {
+      document.startViewTransition(() => {
+        isDarkTheme.value = !isDarkTheme.value
+        document.documentElement.classList.toggle('dark-theme')
+      })
+    } else {
       isDarkTheme.value = !isDarkTheme.value
       document.documentElement.classList.toggle('dark-theme')
-    })
-  } else {
-    isDarkTheme.value = !isDarkTheme.value
-    document.documentElement.classList.toggle('dark-theme')
-  }
+    }
+  }, 10)
 }
 </script>
 
@@ -82,7 +98,8 @@ const toggleTheme = () => {
             :src="images[currentImageIndex].src" 
             :alt="images[currentImageIndex].alt"
             :key="images[currentImageIndex].id"
-            style="view-transition-name: gallery-image"
+            class="gallery-img"
+            :style="`view-transition-name: gallery-image; transform: translateX(0);`"
           />
         </div>
         <button @click="nextImage" class="gallery-btn next-btn">→</button>
@@ -174,10 +191,12 @@ h2 {
   justify-content: center;
 }
 
-.image-container img {
-  max-width: 100%;
-  max-height: 100%;
+.gallery-img {
+  width: 100%;
+  height: 100%;
   object-fit: cover;
+  will-change: transform;
+  transform: translateX(0);
 }
 
 .gallery-btn {
@@ -252,59 +271,102 @@ h2 {
   --color-border: #333;
 }
 
-/* View Transitions API */
-@keyframes fade-in {
-  from { opacity: 0; }
-}
-
-@keyframes fade-out {
-  to { opacity: 0; }
-}
-
-@keyframes slide-from-right {
-  from { transform: translateX(100%); }
-}
-
-@keyframes slide-from-left {
-  from { transform: translateX(-100%); }
-}
-
-@keyframes slide-to-right {
-  to { transform: translateX(100%); }
-}
-
-@keyframes slide-to-left {
-  to { transform: translateX(-100%); }
-}
-
-/* Directional gallery transitions - Forward */
+/* View Transitions API - Single animations for clarity */
 .direction-forward ::view-transition-old(gallery-image) {
-  animation: 300ms cubic-bezier(0.4, 0, 0.2, 1) both fade-out,
-             300ms cubic-bezier(0.4, 0, 0.2, 1) both slide-to-left;
+  animation-name: slide-left-fade-out;
+  animation-duration: 300ms;
+  animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  animation-fill-mode: both;
 }
 
 .direction-forward ::view-transition-new(gallery-image) {
-  animation: 300ms cubic-bezier(0.4, 0, 0.2, 1) both fade-in,
-             300ms cubic-bezier(0.4, 0, 0.2, 1) both slide-from-right;
+  animation-name: slide-right-fade-in;
+  animation-duration: 300ms;
+  animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  animation-fill-mode: both;
 }
 
-/* Directional gallery transitions - Backward */
 .direction-backward ::view-transition-old(gallery-image) {
-  animation: 300ms cubic-bezier(0.4, 0, 0.2, 1) both fade-out,
-             300ms cubic-bezier(0.4, 0, 0.2, 1) both slide-to-right;
+  animation-name: slide-right-fade-out;
+  animation-duration: 300ms;
+  animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  animation-fill-mode: both;
 }
 
 .direction-backward ::view-transition-new(gallery-image) {
-  animation: 300ms cubic-bezier(0.4, 0, 0.2, 1) both fade-in,
-             300ms cubic-bezier(0.4, 0, 0.2, 1) both slide-from-left;
+  animation-name: slide-left-fade-in;
+  animation-duration: 300ms;
+  animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  animation-fill-mode: both;
 }
 
-/* Simple fade for card */
+/* Card transitions */
 ::view-transition-old(expand-card) {
-  animation: 300ms cubic-bezier(0.4, 0, 0.2, 1) both fade-out;
+  animation-name: fade-out;
+  animation-duration: 300ms;
+  animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  animation-fill-mode: both;
 }
 
 ::view-transition-new(expand-card) {
-  animation: 300ms cubic-bezier(0.4, 0, 0.2, 1) both fade-in;
+  animation-name: fade-in;
+  animation-duration: 300ms;
+  animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  animation-fill-mode: both;
+}
+
+/* Definition of custom animations */
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes fade-out {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+@keyframes slide-right-fade-in {
+  from { 
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slide-left-fade-in {
+  from { 
+    transform: translateX(-100%); 
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slide-left-fade-out {
+  from { 
+    transform: translateX(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+}
+
+@keyframes slide-right-fade-out {
+  from { 
+    transform: translateX(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(100%);
+    opacity: 0;
+  }
 }
 </style>
