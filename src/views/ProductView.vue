@@ -96,8 +96,17 @@ const productsData = [
 
 const product = computed(() => productsData.find(p => p.id === parseInt(props.id)))
 
+// Get all other products for the navigation
+const otherProducts = computed(() => 
+  productsData.filter(p => p.id !== parseInt(props.id))
+)
+
 const goBack = () => {
   router.push({ name: 'transitions' })
+}
+
+const goToProduct = (productId) => {
+  router.push({ name: 'product', params: { id: productId } })
 }
 </script>
 
@@ -136,6 +145,32 @@ const goBack = () => {
         </ul>
       </div>
     </div>
+    
+    <section class="product-navigation">
+      <h2>More Products</h2>
+      <div class="nav-products-grid">
+        <div 
+          v-for="navProduct in otherProducts" 
+          :key="navProduct.id" 
+          class="nav-product-card"
+          @click="goToProduct(navProduct.id)"
+        >
+          <div class="nav-product-image">
+            <img :src="navProduct.image" :alt="navProduct.name" :style="`view-transition-name: product-image-${navProduct.id}`">
+          </div>
+          <div class="nav-product-name" :style="`view-transition-name: product-name-${navProduct.id}`">
+            {{ navProduct.name }}
+          </div>
+          <div 
+            class="nav-product-color-tag"
+            :style="{
+              backgroundColor: navProduct.color,
+              viewTransitionName: `product-color-${navProduct.id}`
+            }"
+          ></div>
+        </div>
+      </div>
+    </section>
   </div>
   <div v-else class="error">
     Product not found
@@ -247,5 +282,70 @@ h1 {
   border-radius: 8px;
   font-size: 1.5rem;
   color: #e74c3c;
+}
+
+/* Product Navigation Styles */
+.product-navigation {
+  margin-top: 4rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--color-border);
+}
+
+.product-navigation h2 {
+  margin-bottom: 1.5rem;
+  font-size: 1.5rem;
+}
+
+.nav-products-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.nav-product-card {
+  border-radius: 6px;
+  overflow: hidden;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  position: relative;
+  background-color: var(--color-background);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.nav-product-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+.nav-product-image {
+  height: 100px;
+  overflow: hidden;
+}
+
+.nav-product-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.nav-product-name {
+  padding: 0.5rem;
+  font-weight: 500;
+  font-size: 0.9rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.nav-product-color-tag {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 2px solid white;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
 }
 </style>
