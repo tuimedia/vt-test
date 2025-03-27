@@ -12,12 +12,40 @@ const router = createRouter({
     {
       path: '/about',
       name: 'about',
-      // route level code-splitting
-      // this generates a separate chunk (About.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
       component: () => import('../views/AboutView.vue'),
     },
+    {
+      path: '/transitions',
+      name: 'transitions',
+      component: () => import('../views/CrossPageTransitions.vue'),
+    },
+    {
+      path: '/product/:id',
+      name: 'product',
+      component: () => import('../views/ProductView.vue'),
+      props: true,
+    },
   ],
+})
+
+// Add view transitions navigation guard
+router.beforeResolve((to, from) => {
+  // Skip transitions for initial page load
+  if (!from.name) return
+
+  // Only use transitions if the browser supports it
+  if (!document.startViewTransition) return
+  
+  // Use the view transitions API
+  return new Promise(resolve => {
+    // Start the transition
+    document.startViewTransition(async () => {
+      // Wait for the router to be ready to continue
+      resolve()
+      // Give the router time to update the DOM
+      await new Promise(r => setTimeout(r, 0))
+    })
+  })
 })
 
 export default router
