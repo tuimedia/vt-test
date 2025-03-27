@@ -1,5 +1,5 @@
 <script setup>
-import { ref, nextTick } from 'vue'
+import { ref } from 'vue'
 
 // Image gallery
 const images = [
@@ -8,84 +8,60 @@ const images = [
   { id: 3, src: 'https://picsum.photos/id/12/800/500', alt: 'Landscape 3' }
 ]
 const currentImageIndex = ref(0)
-// Direction flag: 1 = forward, -1 = backward
-const direction = ref(1)
 
 const nextImage = () => {
-  // Set direction first
-  direction.value = 1
-  
-  // Wait for Vue to update the DOM with the direction class
-  nextTick(() => {
-    if (document.startViewTransition) {
-      document.startViewTransition(() => {
-        currentImageIndex.value = (currentImageIndex.value + 1) % images.length
-      })
-    } else {
+  if (document.startViewTransition) {
+    document.startViewTransition(() => {
       currentImageIndex.value = (currentImageIndex.value + 1) % images.length
-    }
-  })
+    })
+  } else {
+    currentImageIndex.value = (currentImageIndex.value + 1) % images.length
+  }
 }
 
 const prevImage = () => {
-  // Set direction first
-  direction.value = -1
-  
-  // Wait for Vue to update the DOM with the direction class
-  nextTick(() => {
-    if (document.startViewTransition) {
-      document.startViewTransition(() => {
-        currentImageIndex.value = (currentImageIndex.value - 1 + images.length) % images.length
-      })
-    } else {
+  if (document.startViewTransition) {
+    document.startViewTransition(() => {
       currentImageIndex.value = (currentImageIndex.value - 1 + images.length) % images.length
-    }
-  })
+    })
+  } else {
+    currentImageIndex.value = (currentImageIndex.value - 1 + images.length) % images.length
+  }
 }
 
 // Expandable card
 const isExpanded = ref(false)
 
 const toggleCard = () => {
-  // Wait for Vue to update the DOM
-  nextTick(() => {
-    if (document.startViewTransition) {
-      document.startViewTransition(() => {
-        isExpanded.value = !isExpanded.value
-      })
-    } else {
+  if (document.startViewTransition) {
+    document.startViewTransition(() => {
       isExpanded.value = !isExpanded.value
-    }
-  })
+    })
+  } else {
+    isExpanded.value = !isExpanded.value
+  }
 }
 
 // Theme toggle
 const isDarkTheme = ref(false)
 
 const toggleTheme = () => {
-  // Wait for Vue to update the DOM
-  nextTick(() => {
-    if (document.startViewTransition) {
-      document.startViewTransition(() => {
-        isDarkTheme.value = !isDarkTheme.value
-        document.documentElement.classList.toggle('dark-theme')
-      })
-    } else {
+  if (document.startViewTransition) {
+    document.startViewTransition(() => {
       isDarkTheme.value = !isDarkTheme.value
       document.documentElement.classList.toggle('dark-theme')
-    }
-  })
+    })
+  } else {
+    isDarkTheme.value = !isDarkTheme.value
+    document.documentElement.classList.toggle('dark-theme')
+  }
 }
 </script>
 
 <template>
   <div 
     class="in-page-transitions" 
-    :class="{ 
-      'dark-theme': isDarkTheme,
-      'direction-forward': direction === 1,
-      'direction-backward': direction === -1 
-    }"
+    :class="{ 'dark-theme': isDarkTheme }"
   >
     <h1>In-Page View Transitions</h1>
     
@@ -104,7 +80,7 @@ const toggleTheme = () => {
         </div>
         <button @click="nextImage" class="gallery-btn next-btn">→</button>
       </div>
-      <p class="description">Images transition smoothly between each other, with direction-aware animations</p>
+      <p class="description">Images transition smoothly between each other with fade effects</p>
     </section>
 
     <section>
@@ -271,30 +247,16 @@ h2 {
   --color-border: #333;
 }
 
-/* View Transitions API - Single animations for clarity */
-.direction-forward ::view-transition-old(gallery-image) {
-  animation-name: slide-left-fade-out;
+/* Simplified transitions - using consistent fade effects */
+::view-transition-old(gallery-image) {
+  animation-name: fade-out;
   animation-duration: 300ms;
   animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   animation-fill-mode: both;
 }
 
-.direction-forward ::view-transition-new(gallery-image) {
-  animation-name: slide-right-fade-in;
-  animation-duration: 300ms;
-  animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-  animation-fill-mode: both;
-}
-
-.direction-backward ::view-transition-old(gallery-image) {
-  animation-name: slide-right-fade-out;
-  animation-duration: 300ms;
-  animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-  animation-fill-mode: both;
-}
-
-.direction-backward ::view-transition-new(gallery-image) {
-  animation-name: slide-left-fade-in;
+::view-transition-new(gallery-image) {
+  animation-name: fade-in;
   animation-duration: 300ms;
   animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   animation-fill-mode: both;
@@ -315,7 +277,7 @@ h2 {
   animation-fill-mode: both;
 }
 
-/* Definition of custom animations */
+/* Simple fade animations */
 @keyframes fade-in {
   from { opacity: 0; }
   to { opacity: 1; }
@@ -324,49 +286,5 @@ h2 {
 @keyframes fade-out {
   from { opacity: 1; }
   to { opacity: 0; }
-}
-
-@keyframes slide-right-fade-in {
-  from { 
-    transform: translateX(100%);
-    opacity: 0;
-  }
-  to {
-    transform: translateX(0);
-    opacity: 1;
-  }
-}
-
-@keyframes slide-left-fade-in {
-  from { 
-    transform: translateX(-100%); 
-    opacity: 0;
-  }
-  to {
-    transform: translateX(0);
-    opacity: 1;
-  }
-}
-
-@keyframes slide-left-fade-out {
-  from { 
-    transform: translateX(0);
-    opacity: 1;
-  }
-  to {
-    transform: translateX(-100%);
-    opacity: 0;
-  }
-}
-
-@keyframes slide-right-fade-out {
-  from { 
-    transform: translateX(0);
-    opacity: 1;
-  }
-  to {
-    transform: translateX(100%);
-    opacity: 0;
-  }
 }
 </style>
